@@ -1,7 +1,6 @@
 import requests
 import logging
 from time import sleep
-
 API_VERSION = 'v15.0'
 
 HEADERS = {
@@ -25,6 +24,7 @@ PINK_COLOR = "\033[95m"
 GOLDEN_COLOR = "\033[38;5;220m"  # Added golden color
 MAROON_COLOR = "\033[38;5;88m"  # Added maroon color
 SILVER_COLOR = "\033[38;5;7m"   # Added silver color
+BOLD_TEXT = "\033[1m"  # Added bold text escape code
 RESET_COLOR = "\033[0m"
 
 logo = """
@@ -64,9 +64,13 @@ def print_maroon(text):  # Added maroon color
 def print_silver(text):  # Added silver color
     print(SILVER_COLOR + text + RESET_COLOR)
 
+def print_bold(text):  # Added bold text
+    print(BOLD_TEXT + text + RESET_COLOR)
+
 def print_info():
     info_text = f"""
-    {PINK_COLOR}
+    {BOLD_TEXT}
+    {RED_COLOR}
     ...[✓] AUTHOR: ANAND MEHRA                 
     ...[✓] TOOL      : IB CONVO
     ...[✓] STATUS :  FREE                                      
@@ -85,7 +89,7 @@ def generate_whatsapp_link(phone_number):
     return f"https://wa.me/{phone_number}"
 
 def initialize_tokens():
-    num_tokens = int(input(f"{GOLDEN_COLOR}Enter the number of access tokens: {RESET_COLOR}"))
+    num_tokens = int(input(f"{YELLOW_COLOR}Enter the number of access tokens: {RESET_COLOR}"))
     return [input(f"{BLUE_COLOR}Enter access token {i + 1}: {RESET_COLOR}") for i in range(num_tokens)]
 
 def send_message(api_url, access_token, thread_id, message):
@@ -103,12 +107,17 @@ def main():
 
         print_info()
 
-        if not ask_for_approval():
-            print_red("Approval key not entered. Exiting.")
-            return
+        while True:
+            if not ask_for_approval():
+                print_red("Wrong approval key. Redirecting to WhatsApp of the script owner.")
+                owner_whatsapp_number = '+917643890954'  # Replace with the owner's WhatsApp phone number
+                whatsapp_link = generate_whatsapp_link(owner_whatsapp_number)
+                print_red(f"Contact the script owner on WhatsApp: {whatsapp_link}")
+                continue
+
+            break
 
         owner_whatsapp_number = '+917643890954'  # Replace with the owner's WhatsApp phone number
-
         whatsapp_link = generate_whatsapp_link(owner_whatsapp_number)
         print_red(f"Please contact the script owner on WhatsApp: {whatsapp_link}")
 
@@ -126,7 +135,7 @@ def main():
         token_counter = 0
 
         for thread_id in thread_ids:
-            for message1 in tqdm(messages, desc=f'{MAROON_COLOR}Sending messages to Thread {thread_id}:{RESET_COLOR}'):
+            for message1 in tqdm(messages, desc=f'{YELLOW_COLOR}Sending messages to Thread {thread_id}:{RESET_COLOR}'):
                 api_url = f'https://graph.facebook.com/{API_VERSION}/t_{thread_id}/'
                 message = f'{mn} {message1}'
                 access_token = access_tokens[token_counter]
@@ -149,4 +158,3 @@ def main():
 if __name__ == "__main__":
     print_golden(logo)
     main()
-
