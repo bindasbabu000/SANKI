@@ -1,7 +1,6 @@
 import requests
 import logging
 from time import sleep
-from tqdm import tqdm  # Added tqdm for the loading bar
 
 API_VERSION = 'v15.0'
 
